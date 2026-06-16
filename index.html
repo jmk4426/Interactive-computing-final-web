@@ -14,6 +14,9 @@
       --panel-dark: #718097;
       --ink: #f0f1f3;
       --shadow: rgba(20, 32, 74, 0.22);
+      --menu-closed-size: calc(100vw * 1811 / 1512);
+      --menu-open-size: calc(100vw * 1811 / 1512);
+      --menu-size: var(--menu-closed-size);
     }
 
     * {
@@ -56,57 +59,54 @@
       position: relative;
       z-index: 2;
       margin: 0;
-      padding-top: clamp(60px, 9vh, 86px);
-      text-align: center;
-      color: var(--paper);
-      font-size: clamp(30px, 3.4vw, 50px);
-      font-weight: 100;
-      line-height: 1.2;
+      padding-top: calc(191px / 982px * 100vh);
+      padding-left: calc(66px / 1512px * 100vw);
+      width: min(1530px, calc(100vw - 32px));
+      color: rgba(255, 250, 250, 0.2);
+      font-size: clamp(58px, 11.9vw, 180px);
+      font-weight: 900;
+      line-height: 1.08;
       letter-spacing: 0;
       text-transform: uppercase;
+      text-align: left;
+      -webkit-text-stroke: 1px rgba(255, 255, 255, 0.22);
+      text-shadow:
+        1px 1px 0 rgba(255, 255, 255, 0.34),
+        -1px -1px 0 rgba(27, 40, 83, 0.24),
+        6px 5px 0 rgba(31, 47, 96, 0.22),
+        13px 10px 5px rgba(0, 0, 0, 0.25),
+        -8px -7px 10px rgba(255, 255, 255, 0.16);
+      filter: drop-shadow(-4px -4px 4px rgba(255, 255, 255, 0.13));
+      mix-blend-mode: screen;
     }
 
     .hero-title span {
       display: block;
-      margin-top: 2px;
-      font-size: clamp(24px, 2.7vw, 40px);
+      margin-top: calc(28px / 982px * 100vh);
+      font-size: clamp(36px, 6.35vw, 96px);
       line-height: 1.2;
     }
 
-    .hero-menu-shape {
-      position: fixed;
-      z-index: 4;
-      top: 50%;
-      right: 0;
-      width: min(1027px, 68vw);
-      height: min(1027px, 68vw);
-      min-width: 540px;
-      min-height: 540px;
-      border-radius: 50%;
-      background:
-        linear-gradient(90deg, rgba(74, 102, 179, 0.18), rgba(32, 44, 77, 0.34)),
-        #435989;
-      box-shadow:
-        inset 46px 0 58px rgba(230, 237, 255, 0.07),
-        -12px 0 42px rgba(32, 44, 77, 0.14);
-      transform: translate(56%, -50%);
-      pointer-events: none;
+    body.is-showcase-layout .hero-title {
+      display: none;
     }
 
     .artwork-stage {
       position: absolute;
-      inset: clamp(174px, 22vh, 220px) 0 0 0;
+      inset: 0;
       z-index: 1;
       overflow: hidden;
-      background: rgba(255, 255, 255, 0.12);
+      opacity: 1;
+      pointer-events: auto;
+      background:
+        linear-gradient(180deg, var(--deep) 0%, var(--blue) 44%, #ffffff 115%);
     }
 
     .artwork-slide {
       position: absolute;
       inset: 0;
-      opacity: 0;
-      visibility: hidden;
-      animation: artwork-cycle 42s infinite;
+      opacity: 1;
+      visibility: visible;
     }
 
     .artwork-slide iframe {
@@ -118,76 +118,6 @@
       transform-origin: center;
     }
 
-    .artwork-slide:nth-child(1) {
-      animation-delay: 0s;
-    }
-
-    .artwork-slide:nth-child(2) {
-      animation-delay: 3s;
-    }
-
-    .artwork-slide:nth-child(3) {
-      animation-delay: 6s;
-    }
-
-    .artwork-slide:nth-child(4) {
-      animation-delay: 9s;
-    }
-
-    .artwork-slide:nth-child(5) {
-      animation-delay: 12s;
-    }
-
-    .artwork-slide:nth-child(6) {
-      animation-delay: 15s;
-    }
-
-    .artwork-slide:nth-child(7) {
-      animation-delay: 18s;
-    }
-
-    .artwork-slide:nth-child(8) {
-      animation-delay: 21s;
-    }
-
-    .artwork-slide:nth-child(9) {
-      animation-delay: 24s;
-    }
-
-    .artwork-slide:nth-child(10) {
-      animation-delay: 27s;
-    }
-
-    .artwork-slide:nth-child(11) {
-      animation-delay: 30s;
-    }
-
-    .artwork-slide:nth-child(12) {
-      animation-delay: 33s;
-    }
-
-    .artwork-slide:nth-child(13) {
-      animation-delay: 36s;
-    }
-
-    .artwork-slide:nth-child(14) {
-      animation-delay: 39s;
-    }
-
-    @keyframes artwork-cycle {
-      0%,
-      6.85% {
-        opacity: 1;
-        visibility: visible;
-      }
-
-      7.15%,
-      100% {
-        opacity: 0;
-        visibility: hidden;
-      }
-    }
-
     .menu-toggle {
       position: fixed;
       width: 1px;
@@ -197,31 +127,29 @@
     }
 
     .menu-button {
-      position: fixed;
+      position: absolute;
       z-index: 7;
       top: 50%;
-      left: calc((100vw * 1205 / 1512) - 12.8px);
+      left: calc(45.85px / 1811px * 100%);
       display: grid;
       place-items: center;
-      width: 28px;
-      height: 63px;
+      width: calc(var(--menu-size) * 12 / 1811);
+      height: calc(var(--menu-size) * 106 / 1811);
+      min-width: 6px;
+      min-height: 53px;
       border: 0;
-      border-radius: 999px;
       background: transparent;
       cursor: pointer;
       transform: translateY(-50%);
       transition: opacity 180ms ease, transform 220ms ease;
     }
 
-    .menu-button::before,
-    .menu-close::before {
-      content: "";
-      width: 5px;
-      height: 43px;
-      border-radius: 999px;
-      background: #ffffff;
-      transform: rotate(2deg);
-      box-shadow: 0 1px 10px rgba(255, 255, 255, 0.3);
+    .menu-button svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      filter: drop-shadow(0 1px 10px rgba(255, 255, 255, 0.3));
     }
 
     .menu-button:hover,
@@ -232,58 +160,62 @@
 
     .menu-panel {
       position: fixed;
-      z-index: 8;
+      z-index: 7;
       top: 50%;
-      right: 0;
-      width: min(982px, 94vw);
-      height: min(982px, 94vw);
-      min-width: 620px;
-      min-height: 620px;
+      right: calc(var(--menu-size) * -0.895);
+      width: var(--menu-size);
+      height: var(--menu-size);
       border-radius: 50%;
-      background: var(--panel);
-      box-shadow: -22px 0 70px rgba(24, 35, 70, 0.14);
-      transform: translate(108%, -50%);
-      transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    .menu-close {
-      position: absolute;
-      top: calc(514px / 1027px * 100%);
-      left: calc(14px / 1027px * 100%);
-      display: grid;
-      place-items: center;
-      width: 28px;
-      height: 63px;
-      border-radius: 999px;
-      cursor: pointer;
+      background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.02)),
+        rgba(32, 44, 77, 0.45);
+      box-shadow:
+        inset 48px 0 64px rgba(255, 255, 255, 0.14),
+        inset -34px 0 52px rgba(26, 38, 72, 0.26),
+        -22px 0 70px rgba(24, 35, 70, 0.16);
+      backdrop-filter: blur(18px) saturate(130%);
+      -webkit-backdrop-filter: blur(18px) saturate(130%);
       transform: translateY(-50%);
+      transition:
+        right 620ms cubic-bezier(0.22, 1, 0.36, 1),
+        width 620ms cubic-bezier(0.22, 1, 0.36, 1),
+        height 620ms cubic-bezier(0.22, 1, 0.36, 1),
+        background 300ms ease,
+        box-shadow 300ms ease,
+        backdrop-filter 300ms ease;
     }
 
     .menu-list {
       position: absolute;
-      top: 50%;
-      left: 47%;
+      top: calc(50% - (351px / 1811px * var(--menu-size)));
+      left: calc(398px / 1811px * 100%);
       display: grid;
       gap: 0;
-      width: min(360px, 46vw);
+      width: min(calc(656px / 1811px * 100%), calc(100vw - 72px));
       margin: 0;
       padding: 0;
       list-style: none;
-      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 180ms ease 120ms;
     }
 
     .menu-list a {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 60px;
+      grid-template-columns: minmax(0, calc(var(--menu-size) * 508 / 1811)) calc(var(--menu-size) * 123 / 1811);
       align-items: baseline;
-      gap: 24px;
+      gap: calc(var(--menu-size) * 25 / 1811);
       color: var(--ink);
-      font-size: clamp(21px, 2.15vw, 30px);
+      font-size: clamp(18px, 2.65vw, 40px);
       font-weight: 750;
-      line-height: 1.48;
+      line-height: 1.37;
       letter-spacing: 0;
       text-align: right;
       transition: color 180ms ease, transform 180ms ease;
+    }
+
+    .menu-list a span:first-child {
+      min-width: 0;
+      overflow-wrap: anywhere;
     }
 
     .menu-list a:hover,
@@ -295,6 +227,29 @@
 
     .menu-number {
       color: #ffffff;
+      line-height: 1.05;
+      font-size: clamp(20px, 2.98vw, 45px);
+      transform: translateY(calc(10px / 1811px * var(--menu-size)));
+    }
+
+    .menu-heading {
+      position: absolute;
+      top: calc(468px / 1811px * var(--menu-size));
+      left: calc(931px / 1811px * 100%);
+      width: min(calc(125px / 1811px * 100%), calc(100vw - 72px));
+      margin: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #ffffff;
+      cursor: pointer;
+      font: inherit;
+      font-size: clamp(18px, 2.98vw, 45px);
+      font-weight: 750;
+      line-height: 1.18;
+      text-align: left;
+      opacity: 0;
+      transition: opacity 180ms ease 120ms;
     }
 
     .scrim {
@@ -307,63 +262,78 @@
       transition: opacity 240ms ease;
     }
 
-    .menu-toggle:checked ~ .menu-button {
-      opacity: 0;
-      pointer-events: none;
-    }
-
     .menu-toggle:checked ~ .scrim {
       opacity: 1;
       pointer-events: auto;
     }
 
+    body.is-showcase-layout .menu-panel {
+      right: calc(var(--menu-size) * -0.956);
+    }
+
     .menu-toggle:checked ~ .menu-panel {
-      transform: translate(9%, -50%);
+      --menu-size: var(--menu-open-size);
+      right: calc(var(--menu-size) * -0.363);
+      background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.02)),
+        rgba(67, 89, 137, 0.45);
+      box-shadow:
+        inset 48px 0 64px rgba(255, 255, 255, 0.18),
+        inset -34px 0 52px rgba(26, 38, 72, 0.22),
+        -22px 0 70px rgba(24, 35, 70, 0.16);
+      backdrop-filter: blur(18px) saturate(130%);
+      -webkit-backdrop-filter: blur(18px) saturate(130%);
+    }
+
+    .menu-toggle:checked ~ .menu-panel .menu-list {
+      opacity: 1;
+    }
+
+    .menu-toggle:checked ~ .menu-panel .menu-heading {
+      opacity: 1;
+    }
+
+    .menu-heading:hover,
+    .menu-heading:focus-visible {
+      outline: none;
+      color: #ffffff;
+      text-decoration: underline;
+      text-underline-offset: 6px;
     }
 
     @media (max-width: 720px) {
+      :root {
+        --menu-closed-size: 650px;
+        --menu-open-size: 860px;
+      }
+
       .hero-title {
         padding-inline: 22px;
         padding-top: 54px;
       }
 
-      .hero-menu-shape {
-        width: 118vw;
-        height: 118vw;
-        min-width: 0;
-        min-height: 0;
-        transform: translate(66%, -50%);
-      }
-
-      .menu-button {
-        right: 20vw;
-      }
-
-      .artwork-stage {
-        inset: 148px 0 0 0;
-      }
-
-      .menu-panel {
-        width: 118vw;
-        height: 118vw;
-        min-width: 650px;
-        min-height: 650px;
-      }
-
       .menu-toggle:checked ~ .menu-panel {
-        transform: translate(35%, -50%);
+        right: calc(var(--menu-size) * -0.55);
       }
 
       .menu-list {
-        left: 29%;
-        width: 300px;
+        top: 13%;
+        left: 51%;
+        width: min(340px, calc(100vw - 36px));
+      }
+
+      .menu-heading {
+        top: 9%;
+        left: 61%;
+        width: 90px;
+        font-size: 20px;
       }
 
       .menu-list a {
-        grid-template-columns: minmax(0, 1fr) 42px;
+        grid-template-columns: minmax(0, 1fr) 48px;
         gap: 12px;
-        font-size: 16px;
-        line-height: 1.56;
+        font-size: clamp(14px, 4.6vw, 20px);
+        line-height: 1.42;
       }
     }
   </style>
@@ -378,46 +348,91 @@
         <span>2026-1</span>
       </h1>
       <div class="artwork-stage" aria-label="Rotating artwork previews">
-        <div class="artwork-slide"><iframe src="01_Coordinate/index.html" title="Coordinate preview"></iframe></div>
-        <div class="artwork-slide"><iframe src="02_Emotion and color/index.html" title="Emotion and Color preview"></iframe></div>
-        <div class="artwork-slide"><iframe src="03_Translate and Transition/index.html" title="Translate and Transition preview"></iframe></div>
-        <div class="artwork-slide"><iframe src="04_Array and Behavior/index.html" title="Array and Behavior preview"></iframe></div>
-        <div class="artwork-slide"><iframe src="05_Class/index.html" title="Class preview"></iframe></div>
-        <div class="artwork-slide"><iframe src="06_Smooth moving Class/index.html" title="Smooth moving Class preview"></iframe></div>
-        <div class="artwork-slide"><iframe src="07_Images/index.html" title="Images preview"></iframe></div>
-        <div class="artwork-slide"><iframe src="08_Video/index.html" title="Video preview"></iframe></div>
-        <div class="artwork-slide"><iframe src="09_Typography/index.html" title="Typography preview"></iframe></div>
-        <div class="artwork-slide"><iframe src="10_Noise/index.html" title="Noise preview"></iframe></div>
-        <div class="artwork-slide"><iframe src="11_Easing/index.html" title="Easing preview"></iframe></div>
-        <div class="artwork-slide"><iframe src="12_Easing_Sphere/index.html" title="Easing Sphere preview"></iframe></div>
-        <div class="artwork-slide"><iframe src="13_Machine Learning/index.html" title="Machine Learning preview"></iframe></div>
-        <div class="artwork-slide"><iframe src="14_Face Interaction/index.html" title="Face Interaction preview"></iframe></div>
+        <div class="artwork-slide"><iframe id="artwork-frame" src="10_Noise/index.html" title="Noise preview" allow="camera; microphone"></iframe></div>
       </div>
-      <div class="hero-menu-shape" aria-hidden="true"></div>
     </section>
 
-    <label class="menu-button" for="menu-toggle" aria-label="Open artwork menu"></label>
     <label class="scrim" for="menu-toggle" aria-hidden="true"></label>
 
     <nav class="menu-panel" aria-label="Artwork menu">
-      <label class="menu-close" for="menu-toggle" aria-label="Close artwork menu"></label>
+      <label class="menu-button" for="menu-toggle" aria-label="Open or close artwork menu">
+        <svg width="12" height="106" viewBox="0 0 12 106" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M7.59979 3.50049C2.24296 42.0639 2.02501 63.6869 7.59979 102.25" stroke="white" stroke-width="7" stroke-linecap="round"/>
+        </svg>
+      </label>
+      <button class="menu-heading" type="button">Home</button>
       <ol class="menu-list">
-        <li><a href="01_Coordinate/index.html"><span>Coordinate</span><span class="menu-number">01</span></a></li>
-        <li><a href="02_Emotion and color/index.html"><span>Emotion and Color</span><span class="menu-number">02</span></a></li>
-        <li><a href="03_Translate and Transition/index.html"><span>Translate and Transition</span><span class="menu-number">03</span></a></li>
-        <li><a href="04_Array and Behavior/index.html"><span>Array and Behavior</span><span class="menu-number">04</span></a></li>
-        <li><a href="05_Class/index.html"><span>Class</span><span class="menu-number">05</span></a></li>
-        <li><a href="06_Smooth moving Class/index.html"><span>Smooth moving Class</span><span class="menu-number">06</span></a></li>
-        <li><a href="07_Images/index.html"><span>Images</span><span class="menu-number">07</span></a></li>
-        <li><a href="08_Video/index.html"><span>Video</span><span class="menu-number">08</span></a></li>
-        <li><a href="09_Typography/index.html"><span>Typography</span><span class="menu-number">09</span></a></li>
-        <li><a href="10_Noise/index.html"><span>Noise</span><span class="menu-number">10</span></a></li>
-        <li><a href="11_Easing/index.html"><span>Easing</span><span class="menu-number">11</span></a></li>
-        <li><a href="12_Easing_Sphere/index.html"><span>Easing Sphere</span><span class="menu-number">12</span></a></li>
-        <li><a href="13_Machine Learning/index.html"><span>Machine Learning</span><span class="menu-number">13</span></a></li>
-        <li><a href="14_Face Interaction/index.html"><span>Face Interaction</span><span class="menu-number">14</span></a></li>
+        <li><a href="01_Coordinate/index.html" data-artwork-src="01_Coordinate/index.html" data-artwork-title="Coordinate"><span>Coordinate</span><span class="menu-number">01</span></a></li>
+        <li><a href="02_Emotion and color/index.html" data-artwork-src="02_Emotion and color/index.html" data-artwork-title="Emotion and Color"><span>Emotion and Color</span><span class="menu-number">02</span></a></li>
+        <li><a href="03_Translate and Transition/index.html" data-artwork-src="03_Translate and Transition/index.html" data-artwork-title="Translate and Transition"><span>Translate and Transition</span><span class="menu-number">03</span></a></li>
+        <li><a href="04_Array and Behavior/index.html" data-artwork-src="04_Array and Behavior/index.html" data-artwork-title="Array and Behavior"><span>Array and Behavior</span><span class="menu-number">04</span></a></li>
+        <li><a href="05_Class/index.html" data-artwork-src="05_Class/index.html" data-artwork-title="Class"><span>Class</span><span class="menu-number">05</span></a></li>
+        <li><a href="06_Smooth moving Class/index.html" data-artwork-src="06_Smooth moving Class/index.html" data-artwork-title="Smooth moving Class"><span>Smooth moving Class</span><span class="menu-number">06</span></a></li>
+        <li><a href="07_Images/index.html" data-artwork-src="07_Images/index.html" data-artwork-title="Images"><span>Images</span><span class="menu-number">07</span></a></li>
+        <li><a href="08_Video/index.html" data-artwork-src="08_Video/index.html" data-artwork-title="Video"><span>Video</span><span class="menu-number">08</span></a></li>
+        <li><a href="09_Typography/index.html" data-artwork-src="09_Typography/index.html" data-artwork-title="Typography"><span>Typography</span><span class="menu-number">09</span></a></li>
+        <li><a href="10_Noise/index.html" data-artwork-src="10_Noise/index.html" data-artwork-title="Noise"><span>Noise</span><span class="menu-number">10</span></a></li>
+        <li><a href="11_Easing/index.html" data-artwork-src="11_Easing/index.html" data-artwork-title="Easing"><span>Easing</span><span class="menu-number">11</span></a></li>
+        <li><a href="12_Easing_Sphere/index.html" data-artwork-src="12_Easing_Sphere/index.html" data-artwork-title="Easing Sphere"><span>Easing Sphere</span><span class="menu-number">12</span></a></li>
+        <li><a href="13_Machine Learning/index.html" data-artwork-src="13_Machine Learning/index.html" data-artwork-title="Machine Learning"><span>Machine Learning</span><span class="menu-number">13</span></a></li>
+        <li><a href="14_Face Interaction/index.html" data-artwork-src="14_Face Interaction/index.html" data-artwork-title="Face Interaction"><span>Face Interaction</span><span class="menu-number">14</span></a></li>
       </ol>
     </nav>
   </main>
+  <script>
+    const artworkFrame = document.querySelector("#artwork-frame");
+    const menuToggle = document.querySelector("#menu-toggle");
+    const homeButton = document.querySelector(".menu-heading");
+    const defaultArtworkSrc = "10_Noise/index.html";
+    const defaultArtworkTitle = "Noise preview";
+    const noIdleReturnArtworks = new Set([
+      "08_Video/index.html",
+      "13_Machine Learning/index.html",
+      "14_Face Interaction/index.html"
+    ]);
+    let currentArtworkSrc = defaultArtworkSrc;
+    let idleTimer = 0;
+
+    function loadMainPage() {
+      clearTimeout(idleTimer);
+      currentArtworkSrc = defaultArtworkSrc;
+      artworkFrame.src = defaultArtworkSrc;
+      artworkFrame.title = defaultArtworkTitle;
+      document.body.classList.remove("is-showcase-layout");
+      menuToggle.checked = false;
+    }
+
+    function resetIdleTimer() {
+      clearTimeout(idleTimer);
+
+      if (!document.body.classList.contains("is-showcase-layout")) {
+        return;
+      }
+
+      if (noIdleReturnArtworks.has(currentArtworkSrc)) {
+        return;
+      }
+
+      idleTimer = setTimeout(loadMainPage, 60000);
+    }
+
+    document.querySelectorAll("[data-artwork-src]").forEach((link) => {
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        currentArtworkSrc = link.dataset.artworkSrc;
+        artworkFrame.src = link.dataset.artworkSrc;
+        artworkFrame.title = `${link.dataset.artworkTitle} preview`;
+        document.body.classList.add("is-showcase-layout");
+        menuToggle.checked = false;
+        resetIdleTimer();
+      });
+    });
+
+    homeButton.addEventListener("click", loadMainPage);
+
+    ["pointermove", "pointerdown", "keydown", "touchstart", "wheel"].forEach((eventName) => {
+      window.addEventListener(eventName, resetIdleTimer, { passive: true });
+    });
+  </script>
 </body>
 </html>

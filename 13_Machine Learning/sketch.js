@@ -6,9 +6,10 @@
   
   // Video
   let video;
-  let flippedVideo;
   // To store the classification
   let label = "";
+  let confidence = 0;
+  let classifierStatus = "loading model...";
   let prevLabel = "";
   let trailMode = false;
   let resetFrames = 0;
@@ -21,11 +22,6 @@
   let selectedColorIndex = 0;
   let ellipseColor;
 
-  // Load the model first
-  function preload() {
-    classifier = ml5.imageClassifier(imageModelURL + 'model.json',{flipped: true});
-  }
-
   function setup() {
     createCanvas(windowWidth, windowHeight);
     ellipseX = width / 2;
@@ -33,16 +29,25 @@
     ellipseColor = color(colorOptions[selectedColorIndex]);
     trailLayer = createGraphics(windowWidth, windowHeight);
     trailLayer.clear();
-    // Create the video
-    video = createCapture(VIDEO);
-    scale(0.5);
+    // Start the camera first, then load the Teachable Machine model.
+    video = createCapture(VIDEO, startClassifier);
     video.size(320, 240);
     video.hide();
+  }
 
-    // flippedVideo = ml5.flipImage(video);
-    // // Start classifying
-    // classifyVideo();
-    classifier.classifyStart(video, gotResult);
+  async function startClassifier() {
+    try {
+      classifierStatus = "loading model...";
+      classifier = await tmImage.load(
+        imageModelURL + 'model.json',
+        imageModelURL + 'metadata.json'
+      );
+      classifierStatus = "model ready";
+      classifyVideo();
+    } catch (error) {
+      classifierStatus = "model failed to load";
+      console.error(error);
+    }
   }
 
   function draw() {
@@ -76,6 +81,8 @@
     text('click to draw', videoX + scaledWidth + 10, 10);
     text('show open hand to reset', videoX + scaledWidth + 10, 30);
     text('show fist to increase brush size', videoX + scaledWidth + 10, 50);
+    text(`model: ${classifierStatus}`, videoX + scaledWidth + 10, 70);
+    text(`label: ${label || 'waiting'} ${nf(confidence * 100, 2, 0)}%`, videoX + scaledWidth + 10, 90);
 
     // Draw only a mouse-following ellipse with smoothed motion
     let prevX = ellipseX;
@@ -173,24 +180,28 @@
     trailMode = !trailMode;
   }
 
-  // Get a prediction for the current video frame
-  // function classifyVideo() {
-  //   flippedVideo = ml5.flipImage(video)
-  //   classifier.classify(flippedVideo, gotResult);
-  //   flippedVideo.remove();
+  async function classifyVideo() {
+    if (!classifier || !video || !video.elt || video.elt.readyState < 2) {
+      if (classifier) {
+        classifierStatus = "waiting for camera";
+      }
+      requestAnimationFrame(classifyVideo);
+      return;
+    }
 
-  // }
+    try {
+      classifierStatus = "model ready";
+      const predictions = await classifier.predict(video.elt, true);
+      predictions.sort((a, b) => b.probability - a.probability);
 
-  // When we get a result
-  function gotResult(results) {
-    // If there is an error
-    // if (error) {
-    //   console.error(error);
-    //   return;
-    // }
-    // The results are in an array ordered by confidence.
-    // console.log(results[0]);
-    label = results[0].label;
-    // Classifiy again!
-    // classifyVideo();
+      if (predictions.length > 0) {
+        label = predictions[0].className;
+        confidence = predictions[0].probability;
+      }
+    } catch (error) {
+      classifierStatus = "prediction error";
+      console.error(error);
+    }
+
+    requestAnimationFrame(classifyVideo);
   }
