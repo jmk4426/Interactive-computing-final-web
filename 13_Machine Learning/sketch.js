@@ -81,8 +81,6 @@
     text('click to draw', videoX + scaledWidth + 10, 10);
     text('show open hand to reset', videoX + scaledWidth + 10, 30);
     text('show fist to increase brush size', videoX + scaledWidth + 10, 50);
-    text(`model: ${classifierStatus}`, videoX + scaledWidth + 10, 70);
-    text(`label: ${label || 'waiting'} ${nf(confidence * 100, 2, 0)}%`, videoX + scaledWidth + 10, 90);
 
     // Draw only a mouse-following ellipse with smoothed motion
     let prevX = ellipseX;
