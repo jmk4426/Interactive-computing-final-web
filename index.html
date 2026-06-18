@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Interactive Computing 2026-1</title>
   <style>
+    @font-face {
+      font-family: "Pretendard Variable";
+      src: url("PretendardVariable.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 100 900;
+      font-display: swap;
+    }
+
     :root {
       --deep: #202c4d;
       --blue: #4a66b3;
@@ -33,7 +41,7 @@
       overflow-x: hidden;
       background: var(--mist);
       color: var(--paper);
-      font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     a {
@@ -144,7 +152,7 @@
       transition: opacity 180ms ease, transform 220ms ease;
     }
 
-    .menu-button svg {
+    .menu-button img {
       display: block;
       width: 100%;
       height: 100%;
@@ -165,24 +173,13 @@
       right: calc(var(--menu-size) * -0.895);
       width: var(--menu-size);
       height: var(--menu-size);
-      border-radius: 50%;
-      background:
-        linear-gradient(90deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.02)),
-        rgba(32, 44, 77, 0.45);
-      box-shadow:
-        inset 48px 0 64px rgba(255, 255, 255, 0.14),
-        inset -34px 0 52px rgba(26, 38, 72, 0.26),
-        -22px 0 70px rgba(24, 35, 70, 0.16);
-      backdrop-filter: blur(18px) saturate(130%);
-      -webkit-backdrop-filter: blur(18px) saturate(130%);
+      background: url("menu-shape.svg") center / 100% 100% no-repeat;
       transform: translateY(-50%);
       transition:
         right 620ms cubic-bezier(0.22, 1, 0.36, 1),
         width 620ms cubic-bezier(0.22, 1, 0.36, 1),
         height 620ms cubic-bezier(0.22, 1, 0.36, 1),
-        background 300ms ease,
-        box-shadow 300ms ease,
-        backdrop-filter 300ms ease;
+        background 300ms ease;
     }
 
     .menu-list {
@@ -205,9 +202,9 @@
       align-items: baseline;
       gap: calc(var(--menu-size) * 25 / 1811);
       color: var(--ink);
-      font-size: clamp(18px, 2.65vw, 40px);
-      font-weight: 750;
-      line-height: 1.37;
+      font-size: calc(var(--menu-size) * 30 / 1811);
+      font-weight: 100;
+      line-height: 1.88;
       letter-spacing: 0;
       text-align: right;
       transition: color 180ms ease, transform 180ms ease;
@@ -226,10 +223,11 @@
     }
 
     .menu-number {
-      color: #ffffff;
-      line-height: 1.05;
-      font-size: clamp(20px, 2.98vw, 45px);
-      transform: translateY(calc(10px / 1811px * var(--menu-size)));
+      color: var(--ink);
+      font-size: inherit;
+      font-weight: 100;
+      line-height: 1.59;
+      transform: none;
     }
 
     .menu-heading {
@@ -244,9 +242,9 @@
       color: #ffffff;
       cursor: pointer;
       font: inherit;
-      font-size: clamp(18px, 2.98vw, 45px);
-      font-weight: 750;
-      line-height: 1.18;
+      font-size: calc(var(--menu-size) * 45 / 1811);
+      font-weight: 600;
+      line-height: normal;
       text-align: left;
       opacity: 0;
       transition: opacity 180ms ease 120ms;
@@ -256,7 +254,7 @@
       position: fixed;
       inset: 0;
       z-index: 6;
-      background: rgba(20, 32, 74, 0.16);
+      background: transparent;
       opacity: 0;
       pointer-events: none;
       transition: opacity 240ms ease;
@@ -274,15 +272,6 @@
     .menu-toggle:checked ~ .menu-panel {
       --menu-size: var(--menu-open-size);
       right: calc(var(--menu-size) * -0.363);
-      background:
-        linear-gradient(90deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.02)),
-        rgba(67, 89, 137, 0.45);
-      box-shadow:
-        inset 48px 0 64px rgba(255, 255, 255, 0.18),
-        inset -34px 0 52px rgba(26, 38, 72, 0.22),
-        -22px 0 70px rgba(24, 35, 70, 0.16);
-      backdrop-filter: blur(18px) saturate(130%);
-      -webkit-backdrop-filter: blur(18px) saturate(130%);
     }
 
     .menu-toggle:checked ~ .menu-panel .menu-list {
@@ -356,9 +345,7 @@
 
     <nav class="menu-panel" aria-label="Artwork menu">
       <label class="menu-button" for="menu-toggle" aria-label="Open or close artwork menu">
-        <svg width="12" height="106" viewBox="0 0 12 106" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M7.59979 3.50049C2.24296 42.0639 2.02501 63.6869 7.59979 102.25" stroke="white" stroke-width="7" stroke-linecap="round"/>
-        </svg>
+        <img src="menu-button.svg" alt="" aria-hidden="true">
       </label>
       <button class="menu-heading" type="button">Home</button>
       <ol class="menu-list">
@@ -387,6 +374,7 @@
     const defaultArtworkTitle = "Disturb the calmness preview";
     const noIdleReturnArtworks = new Set([
       "08_Color of Motion/index.html",
+      "09_Fishes in Water/index.html",
       "13_Free Sketches/index.html",
       "14_Fly Bird/index.html"
     ]);
