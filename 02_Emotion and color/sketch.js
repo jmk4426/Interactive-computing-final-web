@@ -184,7 +184,7 @@ function draw() {
   vertex(450,700);
   vertex(525,1050);
   vertex(600,700);
-  endShape(closed);
+  endShape(CLOSE);
 
   //anger shape (triangle bottom)
 
@@ -203,7 +203,7 @@ function draw() {
   vertex(450,1400);
   vertex(525,1050);
   vertex(600,1400);
-  endShape(closed);
+  endShape(CLOSE);
 
   //fear (hand 1)
 
@@ -286,3 +286,4 @@ function draw() {
   bezierVertex(787,1126.5,835,1086,903.5,1118.5);
   endShape();
 }
+

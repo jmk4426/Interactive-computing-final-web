@@ -24,6 +24,11 @@ let highScore = 0;
 
 // Mouth detection
 let mouthOpen = false;
+let wasMouthOpen = false;
+let cameraReady = false;
+let faceDetected = false;
+const MOUTH_OPEN_THRESHOLD = 0.20;
+const MOUTH_CLOSE_THRESHOLD = 0.14;
 
 // Monotone palette
 const BG       = [255, 255, 255];
@@ -40,7 +45,9 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   noSmooth();
 
-  video = createCapture(VIDEO);
+  video = createCapture(VIDEO, () => {
+    cameraReady = true;
+  });
   video.size(640, 480);
   video.hide();
   faceMesh.detectStart(video, gotFaces);
@@ -64,6 +71,7 @@ function resetGame() {
   pipeSpeed     = width * 0.004;
   score         = 0;
   mouthOpen     = false;
+  wasMouthOpen  = false;
 }
 
 // ─────────────────────────────────────────────
@@ -77,7 +85,14 @@ function draw() {
 
 // ── Face detection ────────────────────────────
 function processFace() {
-  if (faces.length === 0) return;
+  faceDetected = faces.length > 0;
+
+  if (!faceDetected) {
+    mouthOpen = false;
+    wasMouthOpen = false;
+    return;
+  }
+
   let face = faces[0];
 
   let mTop    = face.keypoints[13];
@@ -85,15 +100,26 @@ function processFace() {
   let mLeft   = face.keypoints[78];
   let mRight  = face.keypoints[308];
 
+  if (!mTop || !mBot || !mLeft || !mRight) return;
+
   let mVertical   = dist(mTop.x, mTop.y, mBot.x, mBot.y);
   let mHorizontal = dist(mLeft.x, mLeft.y, mRight.x, mRight.y);
   let mRatio      = mVertical / mHorizontal;
 
-  mouthOpen = mRatio > 0.18;
+  // Two thresholds prevent tiny landmark fluctuations from rapidly
+  // switching the bird between rising and falling.
+  if (mouthOpen) {
+    mouthOpen = mRatio > MOUTH_CLOSE_THRESHOLD;
+  } else {
+    mouthOpen = mRatio > MOUTH_OPEN_THRESHOLD;
+  }
 
-  if (mouthOpen && (gameState === 'start' || gameState === 'gameover')) {
+  let mouthJustOpened = mouthOpen && !wasMouthOpen;
+  if (mouthJustOpened && (gameState === 'start' || gameState === 'gameover')) {
     startGame();
   }
+
+  wasMouthOpen = mouthOpen;
 }
 
 function startGame() {
@@ -120,7 +146,7 @@ function drawStart() {
   textSize(width * 0.018);
   text('open mouth to rise · close to fall', cx, height * 0.33);
 
-  drawButton(cx, height * 0.65, width * 0.20, height * 0.08, 'START');
+  drawTrackerStatus(cx, height * 0.65);
 
   if (highScore > 0) {
     fill(...FG_MID);
@@ -204,9 +230,9 @@ function drawGameOver() {
 
   fill(...FG_MID);
   textSize(width * 0.016);
-  text('open mouth to restart', cx, height * 0.62);
+  text('close, then open mouth to restart', cx, height * 0.62);
 
-  drawButton(cx, height * 0.72, width * 0.20, height * 0.08, 'REPLAY');
+  drawTrackerStatus(cx, height * 0.72);
 }
 
 // ── Drawing helpers ────────────────────────────
@@ -246,20 +272,26 @@ function drawPipe(x, topH, botY) {
   rect(x - (capW - pipeW) / 2, botY, capW, capH);
 }
 
-function drawButton(cx, cy, bw, bh, label) {
-  let hov = mouseX > cx - bw/2 && mouseX < cx + bw/2 &&
-            mouseY > cy - bh/2 && mouseY < cy + bh/2;
-
+function drawTrackerStatus(cx, cy) {
+  let bw = width * 0.28;
+  let bh = height * 0.08;
   stroke(...FG);
   strokeWeight(max(1.5, width * 0.0015));
-  fill(hov ? [...FG] : [...BG]);
+  fill(...BG);
   rect(cx - bw/2, cy - bh/2, bw, bh);
 
   noStroke();
-  fill(hov ? [...BG] : [...FG]);
+  fill(...FG);
   textAlign(CENTER, CENTER);
-  textSize(width * 0.022);
-  text(label, cx, cy);
+  textSize(width * 0.017);
+
+  if (!cameraReady) {
+    text('ALLOWING CAMERA…', cx, cy);
+  } else if (!faceDetected) {
+    text('LOOK AT THE CAMERA', cx, cy);
+  } else {
+    text('OPEN MOUTH TO START', cx, cy);
+  }
 }
 
 // ── Pipes ─────────────────────────────────────
@@ -304,30 +336,6 @@ function updatePipes() {
 function endGame() {
   if (score > highScore) highScore = score;
   gameState = 'gameover';
-}
-
-// ── Input ─────────────────────────────────────
-function mouseClicked() {
-  if (gameState === 'start') {
-    let bw = width * 0.20, bh = height * 0.08;
-    let cx = width / 2,    cy = height * 0.65;
-    if (mouseX > cx-bw/2 && mouseX < cx+bw/2 && mouseY > cy-bh/2 && mouseY < cy+bh/2)
-      startGame();
-  } else if (gameState === 'playing') {
-    birdVY = -height * 0.015;
-  } else if (gameState === 'gameover') {
-    let bw = width * 0.20, bh = height * 0.08;
-    let cx = width / 2,    cy = height * 0.72;
-    if (mouseX > cx-bw/2 && mouseX < cx+bw/2 && mouseY > cy-bh/2 && mouseY < cy+bh/2)
-      startGame();
-  }
-}
-
-function keyPressed() {
-  if (key === ' ') {
-    if      (gameState === 'playing')                           birdVY = -height * 0.015;
-    else if (gameState === 'start' || gameState === 'gameover') startGame();
-  }
 }
 
 function windowResized() {
